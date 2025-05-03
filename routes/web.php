@@ -33,6 +33,7 @@ Route::middleware('auth')->group(function () {
     Route::patch('/user/{user}/makeadmin', [UserController::class, 'makeadmin'])->name('user.makeadmin');
     Route::patch('/user/{user}/removeadmin', [UserController::class, 'removeadmin'])->name('user.removeadmin');    
     Route::delete('/user/{user}', [UserController::class, 'destroy'])->name('user.destroy');
-    Route::get('/user/edit', [UserController::class, 'edit'])->name('user.edit');   
+    Route::get('/user/edit', [UserController::class, 'edit'])->name('user.edit'); 
+    Route::resource('user', UserController::class)->except(['show']);  
 });
 require __DIR__.'/auth.php';
