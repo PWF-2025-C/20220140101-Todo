@@ -2,18 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Category;
 use Illuminate\Http\Request;
+use App\Models\Category;
+
 use Illuminate\Support\Facades\Auth;
 
 class CategoryController extends Controller
 {
     public function index()
     {
-        $categories = Category::withCount(['todos' => function ($query) {
-            $query->where('user_id', Auth::id());
-        }])->where('user_id', Auth::id())->get();
-
+        $categories = Category::with('todos')->where('user_id', Auth::id())->get();
         return view('category.index', compact('categories'));
     }
 
@@ -29,16 +27,11 @@ class CategoryController extends Controller
         ]);
 
         Category::create([
-            'title' => $request->title,
             'user_id' => Auth::id(),
+            'title' => $request->title,
         ]);
 
-        return redirect()->route('category.index')->with('success', 'Category created successfully.');
-    }
-
-    public function show(Category $category)
-    {
-        return view('category.show', compact('category'));
+        return redirect()->route('category.index')->with('success', 'Category created successfully!');
     }
 
     public function edit(Category $category)
@@ -56,12 +49,16 @@ class CategoryController extends Controller
             'title' => $request->title,
         ]);
 
-        return redirect()->route('category.index')->with('success', 'Category updated successfully.');
+        return redirect()->route('category.index')->with('success', 'Category updated successfully!');
     }
 
     public function destroy(Category $category)
     {
-        $category->delete();
-        return redirect()->route('category.index')->with('success', 'Category deleted successfully.');
+        if (Auth::id() == $category->user_id) {
+            $category->delete();
+            return redirect()->route('category.index')->with('success', 'Category deleted successfully!');
+        } else {
+        return redirect()->route('category.index')->with('danger', 'You are not authorized to delete this category!');
+        }
     }
 }

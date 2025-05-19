@@ -39,7 +39,7 @@
                                         </a>
                                     </td>
                                     <td class="px-6 py-4 font-semibold">
-                                        {{ $category->todos_count }}
+                                        {{ $category->todos->count() }}
                                     </td>
                                     <td class="px-6 py-4">
                                         <div class="flex space-x-2">
